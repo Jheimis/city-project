@@ -1,0 +1,84 @@
+<div class="row">
+  
+  <div *ngIf="cidadeSelecionada" class="col-sm-6">
+    
+    <app-titulo [titulo] = "(cidadeSelecionada.id === 0 ? 'Cadastrar Cidade' : 'Cód. Cidade ' + cidadeSelecionada.id)">
+      <button class="btn btn-sm btn-outline-danger" style="cursor: pointer;" (click)="voltar()">Fechar</button>
+    </app-titulo>
+    
+    <form [formGroup]= "cidadeForm" (submit)="cidadeSubmit()">
+      <div class="form-group">
+        <label for="formGroupExampleInput" class="form-label">Nome</label>
+        <input type="text" formControlName="nome" class="form-control" >
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput" class="form-label">Estado</label>
+        <select type="text"  formControlName="estadoId" style="cursor: pointer;" class="form-control" >
+          <option *ngFor="let cidade of cidades" [value]="cidade.estadoId">{{ cidade.estado.nome }}</option>
+        </select>
+        <img src="./src/assets/img/" >
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput" class="form-label">População</label>
+        <input type="text" formControlName="populacao" class="form-control" >
+      </div>
+      <div>
+        <hr>
+        <button class="btn btn-success" [disabled]="!cidadeForm.valid">Salvar</button>
+      </div>
+    </form>  
+    
+  </div>
+  
+  <div  [ngClass]="{'col-sm-6' : cidadeSelecionada, 'col-sm-12' : !cidadeSelecionada}">
+    <app-titulo [titulo] = "titulo">
+      <button class="btn btn-success" style="cursor: pointer;" (click)="cadastroCidade()">
+        Cadastrar cidade
+      </button>
+    </app-titulo>
+
+    <table class="table table-hover mt-2">
+      <thead class="table-primary">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Cidade</th>
+          <th scope="col">Estado</th>
+          <th scope="col">População</th>
+          <th scope="col">Custo</th>
+          <th scope="col">Opções</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cidade of cidades"  style="cursor: pointer;">
+          <th scope = "row" (click)="cidadeSelect(cidade)">{{ cidade.id }}</th>
+          <td (click)="cidadeSelect(cidade)">{{ cidade.nome }}</td>
+          <td (click)="cidadeSelect(cidade)">{{ cidade.estado.nome }}</td>
+          <td (click)="cidadeSelect(cidade)">{{ cidade.populacao }}</td>
+          <td (click)="cidadeSelect(cidade)">{{ cidade.custoCidadeUS }}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-outline-danger" (click)="openModal(excluirCidade)">Excluir</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+     
+  </div>
+</div>
+
+<ng-template #excluirCidade>
+  <div class="modal-body">
+    <h2>Deseja excluir essa cidade ?</h2>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success pull-right" aria-label="Close" 
+    (click)="modalRef.hide()">
+    Sim
+  </button>
+  <button type="button" class="btn btn-outline-danger pull-right" aria-label="Close" 
+  (click)="modalRef.hide()">
+  Não
+</button>
+</div>
+</ng-template>
