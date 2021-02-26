@@ -16,9 +16,9 @@ namespace CityProject_WebAPI.Data
            
            builder.Entity<Estado>()
                 .HasData(new List<Estado>(){
-                    new Estado(1, "Rio Grande do Sul", 1488252, 161892044.04),
-                    new Estado(2, "Santa Catarina", 508826, 55849591.02),
-                    new Estado(3, "Paraná", 575377, 63055067.79),
+                    new Estado(1, "Rio Grande do Sul", 1488252, 161892044.04, null),
+                    new Estado(2, "Santa Catarina", 508826, 55849591.02, null),
+                    new Estado(3, "Paraná", 575377, 63055067.79, null),
                 });
 
             builder.Entity<Cidade>()
@@ -27,9 +27,9 @@ namespace CityProject_WebAPI.Data
 
             builder.Entity<Cidade>()
                 .HasData(new List<Cidade>(){
-                    new Cidade( 1, "Porto Alegre", 1488252, 161892044.04, 1),
-                    new Cidade(2, "Florianópolis", 508826, 55849591.02, 2),
-                    new Cidade(3, "Londrina", 575377, 63055067.79, 3),
+                    new Cidade(1, "Porto Alegre", 1488252, 161892044.04, 1, null),
+                    new Cidade(2, "Florianópolis", 508826, 55849591.02, 2, null),
+                    new Cidade(3, "Londrina", 575377, 63055067.79, 3, null),
                 });
 
             builder.Entity<ParametroCusto>()

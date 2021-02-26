@@ -7,13 +7,14 @@ namespace CityProject_WebAPI.Models
 
         }
 
-        public Cidade(int id, string nome, int populacao, double custoCidadeUS, int estadoId)
+        public Cidade(int id, string nome, int populacao, double custoCidadeUS, int estadoId, Estado estado)
         {
             this.Id = id;
             this.Nome = nome;
             this.Populacao = populacao;
             this.CustoCidadeUS = custoCidadeUS;
             this.EstadoId = estadoId;
+            this.Estado = estado;
 
         }
         

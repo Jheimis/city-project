@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityProject_WebAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210226113945_initial")]
+    [Migration("20210226195447_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
