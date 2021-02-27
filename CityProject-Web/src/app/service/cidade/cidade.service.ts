@@ -25,8 +25,8 @@ export class CidadeService {
     return this.http.post(`${this.baseUrl}`, cidade);
   }
 
-  put(id: number, cidade: Cidade){
-    return this.http.put(`${this.baseUrl}/${id}`, cidade);
+  put(cidade: Cidade){
+    return this.http.put(`${this.baseUrl}/${cidade.id}`, cidade);
   }
 
   delete(id: number ){

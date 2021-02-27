@@ -52,29 +52,40 @@ namespace CityProject_WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> post(Cidade cidade)
+        public async Task<IActionResult> post(Cidade model)
         {
             try
             {
                 var cidades = await _repo.GetAllCidadesAsync(true);
                 foreach (var item in cidades)
                 {
-                    if(cidade.Nome.ToUpper() == item.Nome.ToUpper() && cidade.EstadoId == item.EstadoId)
+                    if(model.Nome.ToUpper() == item.Nome.ToUpper() && model.EstadoId == item.EstadoId)
                     {
                         return BadRequest("Cidade já cadastrada nesse estado");
                     }
                 }
                 var parametroCusto = await _repo.GetParametroCusto();
 
+                 if(model.Populacao > parametroCusto.ValorCorte)
+                {
+                    model.CustoCidadeUS = (parametroCusto.ValorCorte * parametroCusto.PorPessoa) 
+                                            + ((model.Populacao - parametroCusto.ValorCorte) 
+                                            * (model.CustoCidadeUS 
+                                            -(model.CustoCidadeUS * (parametroCusto.Desconto * 100))));
+                }
+                else  
+                {
+                    model.CustoCidadeUS = (model.Populacao * parametroCusto.PorPessoa);
+                }
                 
-                cidade.Estado.Populacao = cidade.Estado.Populacao + cidade.Populacao;
-                cidade.Estado.CustoEstadoUS = cidade.Estado.CustoEstadoUS + cidade.CustoCidadeUS;
+                // cidade.Estado.Populacao = cidade.Estado.Populacao + cidade.Populacao;
+                // cidade.Estado.CustoEstadoUS = cidade.Estado.CustoEstadoUS + cidade.CustoCidadeUS;
             
-                _repo.Add(cidade);
+                _repo.Add(model);
 
                 if(await _repo.SaveChangesAsync())
                 {
-                    return Ok(cidade);
+                    return Ok(model);
                 }                
             }
            catch (Exception e)
@@ -89,13 +100,20 @@ namespace CityProject_WebAPI.Controllers
         {
             try
             {
+                var cidades = await _repo.GetAllCidadesAsync(true);
+                 foreach (var item in cidades)
+                {
+                    if(model.Nome.ToUpper() == item.Nome.ToUpper() && model.EstadoId == item.EstadoId)
+                    {
+                        return BadRequest("Cidade já cadastrada nesse estado");
+                    }
+                }
+                
                 var cidade = await _repo.GetCidadesAsyncById(cidadeId, true);
                 if (cidade == null)
                 {
                     return BadRequest("Cidade não encontrada");
                 }
-
-                var estado = cidade.Estado;
 
                 var parametroCusto = await _repo.GetParametroCusto();
                 if(model.Populacao > parametroCusto.ValorCorte)
@@ -110,19 +128,19 @@ namespace CityProject_WebAPI.Controllers
                     model.CustoCidadeUS = (model.Populacao * parametroCusto.PorPessoa);
                 }
 
-                if (estado.Populacao < model.Populacao)
-                {
-                    estado.Populacao += (model.Populacao - estado.Populacao);
-                    estado.CustoEstadoUS += (model.CustoCidadeUS - estado.CustoEstadoUS);
-                }
-                else
-                {
+                // if (estado.Populacao < model.Populacao)
+                // {
+                //     estado.Populacao += (model.Populacao - estado.Populacao);
+                //     estado.CustoEstadoUS += (model.CustoCidadeUS - estado.CustoEstadoUS);
+                // }
+                // else
+                // {
 
-                    estado.Populacao -= (estado.Populacao - model.Populacao);
-                    estado.CustoEstadoUS -= (estado.CustoEstadoUS - model.CustoCidadeUS);
-                }
+                //     estado.Populacao -= (estado.Populacao - model.Populacao);
+                //     estado.CustoEstadoUS -= (estado.CustoEstadoUS - model.CustoCidadeUS);
+                // }
 
-                model.Estado = estado;
+                // model.Estado = estado;
 
                 _repo.Update(model);
                 

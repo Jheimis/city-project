@@ -34,8 +34,6 @@ namespace CityProject_WebAPI.Data
 
             builder.Entity<ParametroCusto>()
                 .HasNoKey();
-                
-            
         }
     }
 }

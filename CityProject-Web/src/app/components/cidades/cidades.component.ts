@@ -1,3 +1,5 @@
+import { EstadoService } from './../../service/estado/estado.service';
+import { Estado } from './../../models/Estado';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -15,28 +17,44 @@ export class CidadesComponent implements OnInit {
   public titulo = 'Cidades';
   public cidadeSelecionada : Cidade;
   public cidadeForm: FormGroup;
-  public cadastroForm: FormGroup;
   public textSimple: string;
   public teste = "teste";
+  public modo: string;
 
   public cidades: Cidade[];
+  public estados: Estado[];
+  public estado_padrao: Estado;
+
 
    openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
   }
   constructor(private fb: FormBuilder, private modalService: BsModalService, 
-    private cidadeService: CidadeService) { 
+    private cidadeService: CidadeService, private estadosService: EstadoService) { 
     this.criarForm();
   }
 
   ngOnInit(): void {
     this.carregarCidades();
+    this.carregarEstados();
   }
 
   carregarCidades(){
     this.cidadeService.getAll().subscribe(
       (cidades: Cidade[]) => {
         this.cidades = cidades;
+      },
+      (erro: any) => {
+        console.error(erro);
+      }
+      
+    );
+  }
+
+  carregarEstados(){
+    this.estadosService.getAll().subscribe(
+      (estados: Estado[]) => {
+        this.estados = estados;
       },
       (erro: any) => {
         console.error(erro);
@@ -52,7 +70,7 @@ export class CidadesComponent implements OnInit {
 
   public cadastroCidade(){
     this.cidadeSelecionada = new Cidade();
-    this.cadastroForm.patchValue(this.cidadeSelecionada);
+    this.cidadeForm.patchValue(this.cidadeSelecionada);
   }
 
   public voltar(){
@@ -69,7 +87,7 @@ export class CidadesComponent implements OnInit {
   }
 
   public salvarCidade (cidade: Cidade){
-    this.cidadeService.put(cidade.id, cidade).subscribe(
+    this.cidadeService.put(cidade).subscribe(
     (retorno: Cidade) => {
       console.log(retorno);
       this.carregarCidades();
@@ -83,9 +101,4 @@ export class CidadesComponent implements OnInit {
   public cidadeSubmit(){
     this.salvarCidade(this.cidadeForm.value);
   }
-
-  public cadastroSubmit(){
-    this.salvarCidade(this.cadastroForm.value);
-  }
-
 }

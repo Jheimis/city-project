@@ -7,7 +7,7 @@ export class Cidade {
         this.nome = '';
         this.populacao = 0;
         this.custoCidadeUS = 0;
-        this.estadoId = 0;
+        this.estadoId = 2;
         
     }
     
