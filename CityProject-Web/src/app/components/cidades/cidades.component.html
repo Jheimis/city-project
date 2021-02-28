@@ -59,7 +59,7 @@
           <td (click)="cidadeSelect(cidade)">{{ cidade.custoCidadeUS }}</td>
           <td>
             <div class="btn-group">
-              <button class="btn btn-sm btn-outline-danger" (click)="openModal(excluirCidade)">Excluir</button>
+              <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)">Excluir</button>
             </div>
           </td>
         </tr>
@@ -69,18 +69,10 @@
   </div>
 </div>
 
-<ng-template #excluirCidade>
-  <div class="modal-body">
-    <h2>Deseja excluir essa cidade ?</h2>
+<ng-template #deleteModal>
+  <div class="modal-body text-center">
+    <p>Confirma a exclusão?</p>
+    <button type="button" class="btn btn-default" (click)="confirmDelete()" >Sim</button>
+    <button type="button" class="btn btn-primary" (click)="declineDelete()" >Não</button>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success pull-right" aria-label="Close" 
-    (click)="modalRef.hide()">
-    Sim
-  </button>
-  <button type="button" class="btn btn-outline-danger pull-right" aria-label="Close" 
-  (click)="modalRef.hide()">
-  Não
-</button>
-</div>
 </ng-template>

@@ -100,21 +100,6 @@ namespace CityProject_WebAPI.Controllers
         {
             try
             {
-                var cidades = await _repo.GetAllCidadesAsync(true);
-                 foreach (var item in cidades)
-                {
-                    if(model.Nome.ToUpper() == item.Nome.ToUpper() && model.EstadoId == item.EstadoId)
-                    {
-                        return BadRequest("Cidade já cadastrada nesse estado");
-                    }
-                }
-                
-                var cidade = await _repo.GetCidadesAsyncById(cidadeId, true);
-                if (cidade == null)
-                {
-                    return BadRequest("Cidade não encontrada");
-                }
-
                 var parametroCusto = await _repo.GetParametroCusto();
                 if(model.Populacao > parametroCusto.ValorCorte)
                 {
@@ -176,7 +161,7 @@ namespace CityProject_WebAPI.Controllers
 
                 if(await _repo.SaveChangesAsync())
                 {
-                    return Ok("Deletado");
+                    return Ok(new {message = "Deletado"});
                 }                
             }
            catch (Exception e)
