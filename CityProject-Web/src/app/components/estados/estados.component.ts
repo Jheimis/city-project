@@ -4,6 +4,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Cidade } from 'src/app/models/Cidade';
 import { Estado } from 'src/app/models/Estado';
 import { CidadeService } from 'src/app/service/cidade/cidade.service';
+import { Dolar } from 'src/app/service/dolar';
+import { DolarService } from 'src/app/service/dolar.service';
 import { EstadoService } from 'src/app/service/estado/estado.service';
 
 
@@ -21,6 +23,7 @@ export class EstadosComponent implements OnInit {
   public titulo = 'Estados';
   public tituloCidades = 'Cidades';
   public estadoSelecionado : Estado;
+  public dolarHoje = new Dolar;
 
   public estados: Estado[];
   public estado: Estado;
@@ -41,12 +44,13 @@ export class EstadosComponent implements OnInit {
     );
   }
   constructor(private fb: FormBuilder, private modalService: BsModalService, 
-    private estadoService: EstadoService, private cidadesService: CidadeService ) { 
+    private estadoService: EstadoService, private cidadesService: CidadeService, private dolarService: DolarService ) { 
 
   }
 
   ngOnInit(): void {
     this.carregarEstados();
+    this.setDolar();
   }
 
   carregarEstados(){
@@ -58,6 +62,24 @@ export class EstadosComponent implements OnInit {
         console.error(erro);
       }
     );
+  }
+
+  convertDolarEstado(estado: Estado) {
+
+    if (estado.custoEstadoUS && this.dolarHoje?.USD) {
+     
+      return estado.custoEstadoUS * (this.dolarHoje.USD.ask || 1);
+    }
+    return (0);
+  }
+
+  private setDolar() {
+    this.dolarService.getDolar()
+      .then(res => {
+        this.dolarHoje = res as Dolar
+
+      })
+      .catch(err => console.log(err))
   }
 
 

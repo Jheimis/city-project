@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Cidade } from 'src/app/models/Cidade';
 import { CidadeService } from 'src/app/service/cidade/cidade.service';
+import { Dolar } from 'src/app/service/dolar';
+import { DolarService } from 'src/app/service/dolar.service';
 
 @Component({
   selector: 'app-cidades',
@@ -22,6 +24,9 @@ export class CidadesComponent implements OnInit {
   public deleteSelecionado : Cidade;
   public cidadeForm: FormGroup;
   public modo: string;
+
+  public dolarHoje = new Dolar;
+  public cidadeDolar: FormGroup;
 
   public cidades: Cidade[];
   public cidade : Cidade;
@@ -48,12 +53,13 @@ export class CidadesComponent implements OnInit {
     this.deleteModalRef.hide();
   }
   constructor(private fb: FormBuilder, private modalService: BsModalService, 
-    private cidadeService: CidadeService, private estadosService: EstadoService) { 
+    private cidadeService: CidadeService, private estadosService: EstadoService, private dolarService: DolarService) { 
     this.criarForm();
   }
 
   ngOnInit(): void {
     this.carregarCidades();
+    this.setDolar();
   }
 
   carregarCidades(){
@@ -86,6 +92,25 @@ export class CidadesComponent implements OnInit {
   public cadastroCidade(){
     this.cidadeSelecionada = new Cidade();
     this.cidadeForm.patchValue(this.cidadeSelecionada);
+  }
+
+  convertDolarCidade(cidade: Cidade) {
+
+    if (cidade.custoCidadeUS && this.dolarHoje?.USD) {
+
+      return cidade.custoCidadeUS * (this.dolarHoje.USD.ask || 1);
+
+    }
+    return 0
+  }
+
+  private setDolar() {
+    this.dolarService.getDolar()
+      .then(res => {
+        this.dolarHoje = res as Dolar
+
+      })
+      .catch(err => console.log(err))
   }
 
   

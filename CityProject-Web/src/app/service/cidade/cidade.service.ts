@@ -22,7 +22,7 @@ export class CidadeService {
   }
 
   getCidadeByEstadoId(id: number): Observable<Cidade[]>{
-    return this.http.get<Cidade[]>(`${this.baseUrl}/ByEstado/${id}`)
+    return this.http.get<Cidade[]>(`${this.baseUrl}/ByEstado/${id}`);
   }
 
   post(cidade: Cidade){

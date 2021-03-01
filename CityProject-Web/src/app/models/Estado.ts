@@ -4,6 +4,6 @@ export class Estado {
     id: number;
     nome: string;
     populacao: number;
-    custoEstadoUs: number;
+    custoEstadoUS: number;
     cidade: Cidade;
 }

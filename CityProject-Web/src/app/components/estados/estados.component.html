@@ -15,7 +15,7 @@
         <th scope = "row" >{{ estado.id }}</th>
         <td>{{ estado.nome }}</td>
         <td>{{ estado.populacao }}</td>
-        <td>{{ estado.custoEstadoUS }}</td>
+        <td>{{convertDolarEstado(estado) | currency:'R$ ':'symbol':'1.2-2'}}</td>
         <td>
           <div class="btn-group" style="cursor: pointer;">
             <button class="btn btn-sm btn-outline-info" (click)="openConsultModal(estado)">Cidades</button>
