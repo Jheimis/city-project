@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "iRW5fXOU8XfChBtPwa270yEEUf4fQZTGlhe8RtfHu6sY1ZIWWjpKmKAMjYBJ2/v3mIrGifQcw3pas3lSi5tgrA==",
+  "dgSpecHash": "NaqYxlc5dKUVGSeDpS+uuVvYffM5QiPdpBjAjTDvR9dOZ/gTXxxQ3NjfHdVQE5hXsCVLL/p7noTFR1iNm0GVJQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Jheimis Marques\\source\\repos\\City-project\\CityProject-WebAPI\\CityProject-WebAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\exceldatareader\\3.6.0\\exceldatareader.3.6.0.nupkg.sha512",
-    "C:\\Users\\Jheimis Marques\\.nuget\\packages\\exceldatareader.dataset\\3.6.0\\exceldatareader.dataset.3.6.0.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.4\\microsoft.aspnetcore.jsonpatch.3.1.4.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\3.1.4\\microsoft.aspnetcore.mvc.newtonsoftjson.3.1.4.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
@@ -34,6 +33,7 @@
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\3.1.4\\microsoft.extensions.logging.abstractions.3.1.4.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.extensions.options\\3.1.4\\microsoft.extensions.options.3.1.4.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.extensions.primitives\\3.1.4\\microsoft.extensions.primitives.3.1.4.nupkg.sha512",
+    "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512",
@@ -49,6 +49,7 @@
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\system.componentmodel.annotations\\4.7.0\\system.componentmodel.annotations.4.7.0.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\system.diagnostics.diagnosticsource\\4.7.1\\system.diagnostics.diagnosticsource.4.7.1.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\Users\\Jheimis Marques\\.nuget\\packages\\system.text.encoding.codepages\\4.7.0\\system.text.encoding.codepages.4.7.0.nupkg.sha512",
     "C:\\Users\\Jheimis Marques\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512"
   ],
   "logs": []

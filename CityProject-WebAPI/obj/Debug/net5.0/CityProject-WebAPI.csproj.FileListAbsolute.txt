@@ -58,4 +58,3 @@ C:\Users\Jheimis Marques\source\repos\City-project\CityProject-WebAPI\obj\Debug\
 C:\Users\Jheimis Marques\source\repos\City-project\CityProject-WebAPI\obj\Debug\net5.0\CityProject-WebAPI.pdb
 C:\Users\Jheimis Marques\source\repos\City-project\CityProject-WebAPI\obj\Debug\net5.0\CityProject-WebAPI.genruntimeconfig.cache
 C:\Users\Jheimis Marques\source\repos\City-project\CityProject-WebAPI\bin\Debug\net5.0\ExcelDataReader.dll
-C:\Users\Jheimis Marques\source\repos\City-project\CityProject-WebAPI\bin\Debug\net5.0\ExcelDataReader.DataSet.dll

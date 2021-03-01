@@ -44,7 +44,7 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
-            "ExcelDataReader.DataSet": {
+            "ExcelDataReader": {
               "target": "Package",
               "version": "[3.6.0, )"
             },
@@ -71,6 +71,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
+            },
+            "System.Text.Encoding.CodePages": {
+              "target": "Package",
+              "version": "[4.7.0, )"
             }
           },
           "imports": [

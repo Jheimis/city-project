@@ -1,74 +1,55 @@
 <div class="row">
-    
-    <div *ngIf="estadoSelecionado" class="col-sm-6">
-      <div class="row">
-        <div class="mr-auto">
-          <app-titulo [titulo] = "'Cód. Estado: ' + estadoSelecionado.id"></app-titulo>
-        </div>
-        <div class="mt-1">
-          <button class="btn btn-sm btn-outline-danger" (click)="voltar()">Fechar</button>
-        </div>
-      </div>   
-          <form [formGroup]= "estadoForm" (submit)="estadoSubmit()">
-            <div class="form-group">
-              <label for="formGroupExampleInput" class="form-label">Nome</label>
-              <input type="text" formControlName="nome" class="form-control" >
-            </div>
-            <div class="form-group">
-              <label for="formGroupExampleInput" class="form-label">Estado</label>
-              <select type="text" formControlName="estado" class="form-control" >
-                <option >teste</option>
-                <option >teste2</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="formGroupExampleInput" class="form-label">Poupulação</label>
-              <input type="text" formControlName="populacao" class="form-control" >
-            </div>
-            <div>
-              <hr>
-              <button class="btn btn-success" [disabled]="!estadoForm.valid">Enviar</button>
-            </div>
-          </form>  
-        </div>
-  
-      <div  [ngClass]="{'col-sm-6' : estadoSelecionado, 'col-sm-12' : !estadoSelecionado}">
-          <app-titulo [titulo] = "titulo"></app-titulo>
-          <table class="table table-hover mt-2">
-            <thead class="table-primary">
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Populaçao</th>
-                <th scope="col">Custo</th>
-                <th scope="col">Opções</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let estado of estados" >
-                <th scope = "row" >{{ estado.id }}</th>
-                <td>{{ estado.nome }}</td>
-                <td>{{ estado.populacao }}</td>
-                <td>{{ estado.custoEstadoUS }}</td>
-                <td>
-                  <div class="btn-group" style="cursor: pointer;">
-                    <button class="btn btn-sm btn-outline-info" (click)="openModal(consultaCidade)">Cidades</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <app-titulo [titulo] = "titulo"></app-titulo>
+  <table class="table table-hover mt-2">
+    <thead class="table-primary">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Populaçao</th>
+        <th scope="col">Custo</th>
+        <th scope="col">Opções</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let estado of estados" >
+        <th scope = "row" >{{ estado.id }}</th>
+        <td>{{ estado.nome }}</td>
+        <td>{{ estado.populacao }}</td>
+        <td>{{ estado.custoEstadoUS }}</td>
+        <td>
+          <div class="btn-group" style="cursor: pointer;">
+            <button class="btn btn-sm btn-outline-info" (click)="openConsultModal(estado)">Cidades</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #consultaCidade >
+  <div class="modal-body" *ngIf='estadoSelecionado'>
+    <app-titulo [titulo] = "tituloCidades"></app-titulo>
+    <h5 *ngIf='cidades == "" '>Nenhuma cidade cadastrada nesse estado !</h5>
+    <table class="table table-hover mt-2" style="text-align: center;"*ngIf='cidades != ""' >
+      <thead class="table-primary">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Cidade</th>
+          <th scope="col">Populaçao</th>
+          <th scope="col">Custo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cidade of cidades" >
+          <th scope = "row" >{{ cidade.id }}</th>
+          <td>{{ cidade.nome }}</td>
+          <td>{{ cidade.populacao }}</td>
+          <td>{{ cidade.custoCidadeUS }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  
-  <ng-template #consultaCidade>
-      <div class="modal-body">
-        <app-tabelaCidade></app-tabelaCidade>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn pull-right" aria-label="Close" 
-        (click)="modalRef.hide()">
-        Fechar
-        </button>
-      </div>
-    </ng-template>
+  <div class="modal-footer">
+    <button class="btn btn-sm btn-outline-danger" style="cursor: pointer;" (click)="voltar()">Fechar</button>
+  </div>
+</ng-template>

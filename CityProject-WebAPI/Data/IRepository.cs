@@ -14,6 +14,7 @@ namespace CityProject_WebAPI.Data
         //Cidade
         Task<Cidade[]> GetAllCidadesAsync(bool includeEstados);
         Task<Cidade> GetCidadesAsyncById(int cidadeId, bool includeEstado);
+        Task<Cidade[]> GetCidadesAsyncByEstadoId(int estadoId);
     
         //Estado
         Task<Estado[]> GetAllEstadosAsync(bool includeCidades);

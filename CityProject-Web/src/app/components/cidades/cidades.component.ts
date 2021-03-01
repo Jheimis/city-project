@@ -21,7 +21,6 @@ export class CidadesComponent implements OnInit {
   public cidadeSelecionada : Cidade;
   public deleteSelecionado : Cidade;
   public cidadeForm: FormGroup;
-  public textSimple: string;
   public modo: string;
 
   public cidades: Cidade[];
@@ -55,7 +54,6 @@ export class CidadesComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregarCidades();
-    this.carregarEstados();
   }
 
   carregarCidades(){
@@ -68,9 +66,7 @@ export class CidadesComponent implements OnInit {
       }
       
     );
-  }
 
-  carregarEstados(){
     this.estadosService.getAll().subscribe(
       (estados: Estado[]) => {
         this.estados = estados;
@@ -92,10 +88,7 @@ export class CidadesComponent implements OnInit {
     this.cidadeForm.patchValue(this.cidadeSelecionada);
   }
 
-  public voltar(){
-    this.cidadeSelecionada = null;
-  }
-
+  
   public criarForm(){
     this.cidadeForm = this.fb.group({
       id: [""],
@@ -104,25 +97,24 @@ export class CidadesComponent implements OnInit {
       populacao: ['', Validators.required]
     });
   }
-
+  
   public salvarCidade (cidade: Cidade){
     (cidade.id === 0) ? this.modo = 'post' : this.modo = 'put';
     this.cidadeService[this.modo](cidade).subscribe(
-    (retorno: Cidade) => {
-      console.log(retorno);
-      this.carregarCidades();
-    },
-    (erro : any) => {
-      console.log(erro);
+      (retorno: Cidade) => {
+        console.log(retorno);
+        this.carregarCidades();
+      },
+      (erro : any) => {
+        console.log(erro);
+      }
+      );
     }
-    );
-  }
-
-  public deletarCidade(){
     
+    public cidadeSubmit(){
+      this.salvarCidade(this.cidadeForm.value);
+    }
+    public voltar(){
+      this.cidadeSelecionada = null;
+    }
   }
-
-  public cidadeSubmit(){
-    this.salvarCidade(this.cidadeForm.value);
-  }
-}

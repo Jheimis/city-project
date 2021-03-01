@@ -68,6 +68,17 @@ namespace CityProject_WebAPI.Data
             return await query.ToArrayAsync();
         }
 
+        public async Task<Cidade[]> GetCidadesAsyncByEstadoId(int estadoId){
+            
+            IQueryable<Cidade> query = _context.Cidades;
+
+            query = query.AsNoTracking()
+                         .OrderBy(cidade => cidade.Id)
+                         .Where(cidade => cidade.EstadoId == estadoId);
+
+            return await query.ToArrayAsync();
+        }
+
         public async Task<Estado[]> GetAllEstadosAsync(bool includeCidade)
         {
             IQueryable<Estado> query = _context.Estados;

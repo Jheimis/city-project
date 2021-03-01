@@ -1,7 +1,9 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Cidade } from 'src/app/models/Cidade';
 import { Estado } from 'src/app/models/Estado';
+import { CidadeService } from 'src/app/service/cidade/cidade.service';
 import { EstadoService } from 'src/app/service/estado/estado.service';
 
 
@@ -14,19 +16,33 @@ import { EstadoService } from 'src/app/service/estado/estado.service';
 export class EstadosComponent implements OnInit {
 
   modalRef: BsModalRef;
+  @ViewChild('consultaCidade')consultaCidade;
+
   public titulo = 'Estados';
+  public tituloCidades = 'Cidades';
   public estadoSelecionado : Estado;
 
-  public textSimple: string;
-
   public estados: Estado[];
+  public estado: Estado;
+  public cidades: Cidade[];
+  
+   openConsultModal(estado) {
+    this.estadoSelecionado = estado;
 
-   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+    this.modalRef = this.modalService.show(this.consultaCidade);
+
+    this.cidadesService.getCidadeByEstadoId(this.estadoSelecionado.id).subscribe(
+      (cidades: Cidade[]) => {
+        this.cidades = cidades;
+      },
+      (erro: any) => {
+        console.error(erro);
+      }
+    );
   }
   constructor(private fb: FormBuilder, private modalService: BsModalService, 
-    private estadoService: EstadoService) { 
-  
+    private estadoService: EstadoService, private cidadesService: CidadeService ) { 
+
   }
 
   ngOnInit(): void {
@@ -41,18 +57,14 @@ export class EstadosComponent implements OnInit {
       (erro: any) => {
         console.error(erro);
       }
-      
     );
   }
 
-  public estadoSelect(estado: Estado){
-    this.estadoSelecionado = estado;
-  
-  }
 
   public voltar(){
     this.estadoSelecionado = null;
+    console.log(this.estadoSelecionado);
+    this.modalRef.hide();
   }
-
 
 }

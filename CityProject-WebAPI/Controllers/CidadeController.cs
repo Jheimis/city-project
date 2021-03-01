@@ -51,6 +51,25 @@ namespace CityProject_WebAPI.Controllers
             }
         }
 
+        [HttpGet("ByEstado/{estadoId}")]
+        public async Task<IActionResult> getCidadeByEstadoId(int estadoId){
+            try
+            {
+                var estado = await _repo.GetEstadosAsyncById(estadoId, false);
+                if (estado == null)
+                    return BadRequest("Estado não encontrado");
+                
+                var result = await _repo.GetCidadesAsyncByEstadoId(estadoId);
+                return Ok(result);
+                
+            }
+            catch (Exception e)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de dados falhou " + e.Message );
+            }
+            return BadRequest();
+        }
+
         [HttpPost]
         public async Task<IActionResult> post(Cidade model)
         {
@@ -170,85 +189,5 @@ namespace CityProject_WebAPI.Controllers
             }
             return BadRequest();
         }
-
-    //     [HttpPost]
-    //      public async Task<IActionResult> UploadExcel()
-    //     {
-    //         try
-    //         { 
-    //             string message = "";
-    //             HttpResponseMessage ResponseMessage = null;  
-    //             var httpRequest = HttpContext.Current.Request._repo; 
-    //             DataSet dsexcelRecords = new DataSet();  
-    //             IExcelDataReader reader = null;  
-    //             HttpPostedFile Inputfile = null;  
-    //             Stream FileStream = null;
-
-    //             if  (httpRequest.Files.Count> 0)  
-    //             {  
-    //                 Inputfile = httpRequest.Files [0];  
-    //                 FileStream = Inputfile.InputStream;  
-
-    //                 if  (Inputfile !=  null  && FileStream !=  null )  
-    //                 {  
-    //                     if    (Inputfile.FileName.EndsWith ( ".xls" ))  
-    //                         reader = ExcelReaderFactory.CreateBinaryReader (FileStream);  
-    //                     else if  (InputfilFe.FileName.EndsWith ( ".xlsx" ))   
-    //                         reader = ExcelReaderFactory.CreateOpenXmlReader (FileStream);  
-    //                     else
-    //                     {
-    //                         message =  "O formato do arquivo não é compatível." ;  
-
-    //                     }  
-    //                     dsexcelRecords = reader.AsDataSet();  
-    //                     reader.Close();
-
-    //                       if (dsexcelRecords != null && dsexcelRecords.Tables.Count > 0)  
-    //                     { 
-    //                         DataTable dtCidadesRecords = dsexcelRecords.Tables[0];  
-    //                         for (int i = 0; i < dtCidadesRecords.Rows.Count; i++)  
-    //                         {  
-                            
-    //                             var estado = await _repo.GetEstadoAsyncByNome(Convert.ToString(dtCidadesRecords.Rows[i][1]));
-    //                         if(estado!= null){
-
-    //                             var cidade = await _repo.GetCidadeAsyncByNome(Convert.ToString(dtCidadesRecords.Rows[i][0]));
-                                    
-    //                                 if (cidade==null){
-                                        
-    //                                     Cidade Objcidade = new Cidade();
-    //                                     {
-    //                                         Objcidade.Nome =  Convert.ToString(dtCidadesRecords.Rows[i][0]);
-    //                                         Objcidade.Populacao = Convert.ToInt32(dtCidadesRecords.Rows[i][1]);
-    //                                         Objcidade.CustoCidadeUS = Convert.ToDouble(dtCidadesRecords.Rows[i][2]);
-    //                                         Objcidade.EstadoId = Convert.ToInt32(dtCidadesRecords.Rows[i][3]);
-    //                                         _repo.Add(Objcidade);
-
-    //                                         }
-    //                                 }
-
-    //                             }
-    //                         }
-
-    //                         if(await _repo.SaveChangesAsync())
-    //                         {
-    //                             return Ok();
-    //                         }
-    //                     }
-
-
-
-    //                 }
-    //             }
-    //         }
-    //                 catch (Exception)
-    //                     {
-    //                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de dados falhou");
-    //                     }
-
-    //                 return BadRequest();
-
-    //  }
-
     }
 }

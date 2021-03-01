@@ -37,6 +37,9 @@
       <button class="btn btn-success" style="cursor: pointer;" (click)="cadastroCidade()">
         Cadastrar cidade
       </button>
+      <button class="btn btn-success ml-2" style="cursor: pointer;" (click)="cadastroCidade()">
+        Cadastrar por arquivo
+      </button>
     </app-titulo>
 
     <table class="table table-hover mt-2">
@@ -59,7 +62,8 @@
           <td (click)="cidadeSelect(cidade)">{{ cidade.custoCidadeUS }}</td>
           <td>
             <div class="btn-group">
-              <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)">Excluir</button>
+              <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)"><i class="fas fa-trash-alt"></i></button>
+              
             </div>
           </td>
         </tr>
