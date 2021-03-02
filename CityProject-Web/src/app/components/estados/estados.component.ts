@@ -73,6 +73,16 @@ export class EstadosComponent implements OnInit {
     return (0);
   }
 
+  convertDolarCidade(cidade: Cidade) {
+
+    if (cidade.custoCidadeUS && this.dolarHoje?.USD) {
+
+      return cidade.custoCidadeUS * (this.dolarHoje.USD.ask || 1);
+
+    }
+    return 0
+  }
+
   private setDolar() {
     this.dolarService.getDolar()
       .then(res => {
@@ -85,7 +95,6 @@ export class EstadosComponent implements OnInit {
 
   public voltar(){
     this.estadoSelecionado = null;
-    console.log(this.estadoSelecionado);
     this.modalRef.hide();
   }
 

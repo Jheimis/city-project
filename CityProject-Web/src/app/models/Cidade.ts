@@ -17,5 +17,4 @@ export class Cidade {
     custoCidadeUS: number;
     estadoId: number;
     estado: Estado;
-    
 }

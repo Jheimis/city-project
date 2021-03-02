@@ -29,6 +29,10 @@ export class CidadeService {
     return this.http.post(`${this.baseUrl}`, cidade);
   }
 
+  postArquivo(cidade: Cidade){
+    return this.http.post(`${this.baseUrl}`, cidade);
+  }
+
   put(cidade: Cidade){
     return this.http.put(`${this.baseUrl}/${cidade.id}`, cidade);
   }

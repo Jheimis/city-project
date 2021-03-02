@@ -16,9 +16,6 @@
         <select type="text" formControlName="estadoId" style="cursor: pointer;" class="form-control" >
           <option *ngFor="let estado of estados" [value]="estado.id">{{ estado.nome }}</option>
         </select>
-        <!-- <img src='/assets/img/Parana.png' >
-        <img src='/assets/img/RioGrandeDoSul.png' >
-        <img src='/assets/img/SantaCatarina.png' > -->
       </div>
       <div class="form-group">
         <label for="formGroupExampleInput" class="form-label">População</label>
@@ -34,12 +31,12 @@
   
   <div  [ngClass]="{'col-sm-6' : cidadeSelecionada, 'col-sm-12' : !cidadeSelecionada}">
     <app-titulo [titulo] = "titulo">
-      <button class="btn btn-success" style="cursor: pointer;" (click)="cadastroCidade()">
+      <!-- <button class="btn btn-success" style="cursor: pointer;" (click)="cadastroCidade()">
         Cadastrar cidade
-      </button>
-      <button class="btn btn-success ml-2" style="cursor: pointer;" (click)="cadastroCidade()">
+      </button> -->
+      <!-- <button class="btn btn-success ml-2" style="cursor: pointer;" (click)="cadastroCidade()">
         Cadastrar por arquivo
-      </button>
+      </button> -->
     </app-titulo>
 
     <table class="table table-hover mt-2" >
@@ -69,9 +66,6 @@
         </tr>
       </tbody>
     </table>
-     <ng-template #loading>
-       <span>Carrengando informações ...</span>
-     </ng-template>
      
   </div>
 </div>

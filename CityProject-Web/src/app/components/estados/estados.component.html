@@ -44,7 +44,7 @@
           <th scope = "row" >{{ cidade.id }}</th>
           <td>{{ cidade.nome }}</td>
           <td>{{ cidade.populacao }}</td>
-          <td>{{ cidade.custoCidadeUS }}</td>
+          <td >{{convertDolarCidade(cidade) | currency:'R$' }}</td>
         </tr>
       </tbody>
     </table>

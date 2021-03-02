@@ -7,6 +7,7 @@ import { Cidade } from 'src/app/models/Cidade';
 import { CidadeService } from 'src/app/service/cidade/cidade.service';
 import { Dolar } from 'src/app/service/dolar';
 import { DolarService } from 'src/app/service/dolar.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cidades',
@@ -16,8 +17,9 @@ import { DolarService } from 'src/app/service/dolar.service';
 export class CidadesComponent implements OnInit {
 
   deleteModalRef: BsModalRef;
-  message: string;
+  cadastroArquivoModalRef: BsModalRef;
   @ViewChild('deleteModal')deleteModal;
+  @ViewChild('cadastroArquivoModal')cadastroArquivoModal;
 
   public titulo = 'Cidades';
   public cidadeSelecionada : Cidade;
@@ -32,34 +34,50 @@ export class CidadesComponent implements OnInit {
   public cidade : Cidade;
   public estados: Estado[];
   
+  constructor(
+    private fb: FormBuilder, 
+    private modalService: BsModalService, 
+    private cidadeService: CidadeService, 
+    private estadosService: EstadoService, 
+    private dolarService: DolarService,
+    private toastr: ToastrService ) { 
+      this.criarForm();
+  }
+    
+  ngOnInit(): void {
+    this.carregarCidades();
+    this.setDolar();
+  }
   openDeleteModal(cidade) {
     this.deleteSelecionado = cidade;
     this.deleteModalRef = this.modalService.show(this.deleteModal, {class: 'modal-sm'});
   }
 
+  openCadastroArquivoModal(){
+    this.cadastroArquivoModalRef = this.modalService.show(this.cadastroArquivoModal);
+  }
+  
   confirmDelete(): void {
-    this.cidadeService.delete(this.deleteSelecionado.id).subscribe(
-      (model : any) => {
-        console.log(model);
-        this.carregarCidades();
-        this.deleteModalRef.hide();
-      },
-      (erro : any) => {console.log(erro);}
-    );
+    if(this.deleteSelecionado.estadoId != 1){
+      this.toastr.success('Cidade deletada com Sucesso', 'Deletada');
+      this.cidadeService.delete(this.deleteSelecionado.id).subscribe(
+        (model : any) => {
+          console.log(model);
+          this.carregarCidades();
+          this.deleteModalRef.hide();
+        },
+        (erro : any) => {console.log(erro);} 
+      );
+    }
+    else{
+      this.toastr.error('Cidades que pertencem ao estado do Rio Grande do Sul não podem ser deletadas', 'Erro');
+      this.deleteModalRef.hide();
+    }
+    
   }
- 
+   
   declineDelete(): void {
-    this.message = 'Cancelado!';
     this.deleteModalRef.hide();
-  }
-  constructor(private fb: FormBuilder, private modalService: BsModalService, 
-    private cidadeService: CidadeService, private estadosService: EstadoService, private dolarService: DolarService) { 
-    this.criarForm();
-  }
-
-  ngOnInit(): void {
-    this.carregarCidades();
-    this.setDolar();
   }
 
   carregarCidades(){
@@ -89,11 +107,6 @@ export class CidadesComponent implements OnInit {
     this.cidadeForm.patchValue(cidade);
   }
 
-  public cadastroCidade(){
-    this.cidadeSelecionada = new Cidade();
-    this.cidadeForm.patchValue(this.cidadeSelecionada);
-  }
-
   convertDolarCidade(cidade: Cidade) {
 
     if (cidade.custoCidadeUS && this.dolarHoje?.USD) {
@@ -113,7 +126,6 @@ export class CidadesComponent implements OnInit {
       .catch(err => console.log(err))
   }
 
-  
   public criarForm(){
     this.cidadeForm = this.fb.group({
       id: [""],
@@ -124,22 +136,43 @@ export class CidadesComponent implements OnInit {
   }
   
   public salvarCidade (cidade: Cidade){
-    (cidade.id === 0) ? this.modo = 'post' : this.modo = 'put';
-    this.cidadeService[this.modo](cidade).subscribe(
-      (retorno: Cidade) => {
-        console.log(retorno);
-        this.carregarCidades();
-      },
-      (erro : any) => {
-        console.log(erro);
-      }
+    if(cidade.populacao <= 0){
+      this.toastr.error('Número de população deve ser maior que 0', 'Erro');
+    }
+    else{
+      this.cidadeService.getAll().subscribe(
+        (cidades: Cidade[]) => {
+          cidades.forEach(item => {
+            if(item.nome.toUpperCase() != cidade.nome.toUpperCase() && item.estadoId != cidade.estadoId){
+
+              (cidade.id === 0) ? this.modo = 'post' : this.modo = 'put';
+              this.cidadeService[this.modo](cidade).subscribe(
+                (retorno: Cidade) => {
+                  console.log(retorno);
+                  this.carregarCidades();
+                },
+                (erro : any) => {
+                  console.log(erro);
+                }
+                );
+            }
+            else {
+              this.toastr.error('Essa cidade já existe nesse estado', 'Erro');
+            }
+          });
+        }
       );
     }
-    
-    public cidadeSubmit(){
-      this.salvarCidade(this.cidadeForm.value);
-    }
-    public voltar(){
-      this.cidadeSelecionada = null;
-    }
   }
+    
+  public cidadeSubmit(){
+    this.salvarCidade(this.cidadeForm.value);
+  }
+
+  public voltar(){
+    this.cidadeSelecionada = null;
+  }
+  public cancelarCadastroArquivo(){
+    this.cadastroArquivoModal.hide();
+  }
+}

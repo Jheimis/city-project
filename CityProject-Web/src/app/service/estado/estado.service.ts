@@ -18,5 +18,7 @@ export class EstadoService {
   
   getById(id: number): Observable<Estado>{
     return this.http.get<Estado>(`${this.baseUrl}/${id}`);
+    
+    
   }
 }

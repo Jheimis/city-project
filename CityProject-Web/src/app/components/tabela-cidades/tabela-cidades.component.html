@@ -1,0 +1,35 @@
+<div  class='col-sm-12'>
+    <app-titulo [titulo] = "titulo">
+        
+        
+    </app-titulo>
+    
+    <table class="table table-hover mt-2" >
+        <thead class="table-primary">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Cidade</th>
+                <th scope="col">Estado</th>
+                <th scope="col">População</th>
+                <th scope="col">Custo</th>
+                <th scope="col">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cidade of cidades"  style="cursor: pointer;">
+                <th scope = "row" (click)="cidadeSelect(cidade)">{{ cidade.id }}</th>
+                <td (click)="cidadeSelect(cidade)">{{ cidade.nome }}</td>
+                <td (click)="cidadeSelect(cidade)">{{ cidade.estado.nome }}</td>
+                <td (click)="cidadeSelect(cidade)">{{ cidade.populacao }}</td>
+                <td >{{convertDolarCidade(cidade) | currency:'R$' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)"><i class="fas fa-trash-alt"></i></button>
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+</div>

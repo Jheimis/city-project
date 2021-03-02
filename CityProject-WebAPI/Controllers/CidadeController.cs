@@ -9,6 +9,7 @@ using ExcelDataReader;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using OfficeOpenXml;
 
 namespace CityProject_WebAPI.Controllers
 {
@@ -18,6 +19,8 @@ namespace CityProject_WebAPI.Controllers
     public class CidadeController : ControllerBase
     {
         public IRepository _repo { get; }
+
+        public Cidade cidadeArquivo = new Cidade();
 
         public CidadeController(IRepository repo)
         {
@@ -42,6 +45,7 @@ namespace CityProject_WebAPI.Controllers
         {
             try
             {
+                
                 var result = await _repo.GetCidadesAsyncById(cidadeId, true);
                 return Ok(result);
             }
@@ -68,6 +72,76 @@ namespace CityProject_WebAPI.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de dados falhou " + e.Message );
             }
             return BadRequest();
+        }
+
+        [HttpPost("arquivo")]
+        public async Task<IActionResult> UploadFile(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("O arquivo não é valido");
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream).ConfigureAwait(false);
+
+                using (var package = new OfficeOpenXml.ExcelPackage(memoryStream))
+                {
+                    for (int i = 1; i <= package.Workbook.Worksheets.Count; i++)
+                    {
+                        var totalRows = package.Workbook.Worksheets[i].Dimension?.Rows;
+                        var totalCollumns = package.Workbook.Worksheets[i].Dimension?.Columns;
+                        for (int j = 1; j <= totalRows.Value; j++)
+                        {
+                            for (int k = 1; k <= totalCollumns.Value; k++)
+                            {
+                                cidadeArquivo.Nome = package.Workbook.Worksheets[i].Cells[j, k].Value.ToString();
+                                cidadeArquivo.EstadoId = int.Parse(package.Workbook.Worksheets[i].Cells[j, k].Value.ToString());
+                                cidadeArquivo.Populacao = int.Parse(package.Workbook.Worksheets[i].Cells[j, k].Value.ToString());
+
+                                try
+                                {
+                                    var cidade = await _repo.GetAllCidadesAsync(false);
+                                    foreach (var item in cidade)
+                                    {
+                                        
+                                        if(item.Nome.ToUpper() != cidadeArquivo.Nome.ToUpper() && item.EstadoId != cidadeArquivo.EstadoId)
+                                        {
+
+                                            var parametroCusto = await _repo.GetParametroCusto();
+
+                                                if(cidadeArquivo.Populacao > parametroCusto.ValorCorte)
+                                                {
+                                                    cidadeArquivo.CustoCidadeUS = (parametroCusto.ValorCorte * parametroCusto.PorPessoa) 
+                                                    + ((cidadeArquivo.Populacao - parametroCusto.ValorCorte) 
+                                                    * (cidadeArquivo.CustoCidadeUS 
+                                                    -(cidadeArquivo.CustoCidadeUS * (parametroCusto.Desconto * 100))));
+                                                }
+                                                else  
+                                                {
+                                                    cidadeArquivo.CustoCidadeUS = (cidadeArquivo.Populacao * parametroCusto.PorPessoa);
+                                                }
+                                        
+                                                _repo.Add(cidadeArquivo);
+
+                                                if(await _repo.SaveChangesAsync())
+                                                {
+                                                    return Ok(cidadeArquivo);
+                                                }  
+                                        }
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de dados falhou " + e.Message );
+                                }     
+                            }
+                        }
+                    }
+                    return Content(cidadeArquivo.Nome);
+                }
+            }
         }
 
         [HttpPost]
@@ -189,5 +263,5 @@ namespace CityProject_WebAPI.Controllers
             }
             return BadRequest();
         }
-    }
+    }   
 }
