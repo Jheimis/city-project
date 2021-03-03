@@ -1,5 +1,4 @@
 <div class="row">
-  
   <div *ngIf="cidadeSelecionada" class="col-sm-6">
     
     <app-titulo [titulo] = "(cidadeSelecionada.id === 0 ? 'Cadastrar Cidade' : 'Cód. Cidade ' + cidadeSelecionada.id)">
@@ -28,8 +27,16 @@
     </form>  
     
   </div>
+
+  <div class='col-sm-12'>
+    
+    <app-titulo [titulo]= "'Estados'">
   
+    </app-titulo>
+  </div>
+
   <div  [ngClass]="{'col-sm-6' : cidadeSelecionada, 'col-sm-12' : !cidadeSelecionada}">
+  
     <app-titulo [titulo] = "titulo">
       <!-- <button class="btn btn-success" style="cursor: pointer;" (click)="cadastroCidade()">
         Cadastrar cidade

@@ -10,7 +10,7 @@ import { DolarService } from 'src/app/service/dolar.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-cidades',
+  selector: 'cidades',
   templateUrl: './cidades.component.html',
   styleUrls: ['./cidades.component.css']
 })
@@ -105,6 +105,11 @@ export class CidadesComponent implements OnInit {
   public cidadeSelect(cidade: Cidade){
     this.cidadeSelecionada = cidade;
     this.cidadeForm.patchValue(cidade);
+  }
+
+  public cadastroCidade(){
+    this.cidadeSelecionada = new Cidade();
+    this.cidadeForm.patchValue(this.cidadeSelecionada);
   }
 
   convertDolarCidade(cidade: Cidade) {

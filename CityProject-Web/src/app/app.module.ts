@@ -17,7 +17,6 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TituloComponent } from './components/titulo/titulo.component';
 import { EstadosComponent } from './components/estados/estados.component';
 import { CidadesComponent } from './components/cidades/cidades.component';
-import { TabelaCidadesComponent } from './components/tabela-cidades/tabela-cidades.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +26,6 @@ import { TabelaCidadesComponent } from './components/tabela-cidades/tabela-cidad
     TituloComponent,
     EstadosComponent,
     CidadesComponent,
-    TabelaCidadesComponent,
   ],
   imports: [
     BrowserModule,

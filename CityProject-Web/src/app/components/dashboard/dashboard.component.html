@@ -1,3 +1,90 @@
+<div>
+  <div>
+    <app-titulo [titulo]= "'Estados'">
+    </app-titulo>
+    <div class="row  mt-4">
+      <div class="col-xl">
+        <select type="text" formControlName="estadoId" style="cursor: pointer;" class="form-control col-sm-6" (change)="changeEstado($event.target.value)">
+          <option *ngFor="let estado of estados" [value]="estado.id">{{ estado.nome }}
+          </option>
+        </select>
+        <h5 class="mt-4">População: 0 habitantes</h5>
+        <h5>Custo do Estado: R$ 0 </h5>
+      </div>
+        <img [src]="imgEstado" width="150 px" height="100px">
+    </div>
+  </div>
 
- <tabelaCidades></tabelaCidades>
-  
+  <div class="row  mt-4">
+    <div class='col-sm-12'>
+      <app-titulo [titulo] = "titulo">
+        <button class="btn btn-success" style="cursor: pointer;" (click)="openCadastroModal()">
+          Cadastrar cidade
+        </button>
+        <button class="btn btn-success ml-2" style="cursor: pointer;" (click)="openCadastroArquivoModal()">
+          Cadastrar por arquivo
+        </button>
+      </app-titulo>
+      
+      <table class="table table-hover mt-2" *ngIf="cidades != null">
+        <thead class="table-primary">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Cidade</th>
+            <th scope="col">População</th>
+            <th scope="col">Custo</th>
+            <th scope="col">Opções</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cidade of cidades"  style="cursor: pointer;">
+            <th scope = "row">{{ cidade.id }}</th>
+            <td>{{ cidade.nome }}</td>
+            <td>{{ cidade.populacao }}</td>
+            <td >{{convertDolarCidade(cidade) | currency:'R$' }}</td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)"><i class="fas fa-trash-alt"></i></button>
+                
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<ng-template #deleteModal >
+  <div class="modal-body text-center">
+    <h6>Confirma a exclusão?</h6>
+    <button type="button" class="btn btn-default" (click)="confirmDelete()" >Sim</button>
+    <button type="button" class="btn btn-primary" (click)="declineDelete()" >Não</button>
+  </div>
+</ng-template>
+
+<ng-template #cadastroModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Cadastro de cidade</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cancelarCadastro()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]= "cidadeForm" (submit)="cidadeSubmit()">
+      <div class="form-group">
+        <label for="formGroupExampleInput" class="form-label">Nome</label>
+        <input type="text" formControlName="nome" class="form-control" >
+      </div>
+      
+      <div class="form-group">
+        <label for="formGroupExampleInput" class="form-label">População</label>
+        <input type="text" formControlName="populacao" class="form-control" >
+      </div>
+    </form>  
+    
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success"  >Salvar</button>
+    <button type="button" class="btn btn-danger" (click)="cancelarCadastro()" >Cancelar</button>
+  </div>
+</ng-template>
