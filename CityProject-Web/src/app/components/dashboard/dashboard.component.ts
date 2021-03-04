@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit {
   public modo: string;
   public imgEstado: string;
   public estadoSelecionado: Estado;
+  public capturaEvento: number;
 
   public dolarHoje = new Dolar;
   public cidadeDolar: FormGroup;
@@ -113,9 +114,12 @@ export class DashboardComponent implements OnInit {
     this.cidadeForm.patchValue(this.cidadeSelecionada);
   }
 
+  carregarCidades(event){}
+
   public changeEstado(event : any ){
 
     console.log(event);
+    this.capturaEvento = event;
     if(event == 1){
      this.imgEstado = "assets/img/RioGrandeDoSul.png";
     }

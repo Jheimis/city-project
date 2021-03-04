@@ -18,6 +18,14 @@ import { TituloComponent } from './components/titulo/titulo.component';
 import { EstadosComponent } from './components/estados/estados.component';
 import { CidadesComponent } from './components/cidades/cidades.component';
 
+import { OnlyNumberDirective } from './directive/only-number.directive';
+
+import {LOCALE_ID, DEFAULT_CURRENCY_CODE} from '@angular/core';
+import localePt from '@angular/common/locales/pt';
+import {registerLocaleData} from '@angular/common';
+
+registerLocaleData(localePt, 'pt');
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,6 +34,7 @@ import { CidadesComponent } from './components/cidades/cidades.component';
     TituloComponent,
     EstadosComponent,
     CidadesComponent,
+    OnlyNumberDirective,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +55,20 @@ import { CidadesComponent } from './components/cidades/cidades.component';
     ),
  
   ],
-  providers: [],
+  providers: [
+  {
+      provide: LOCALE_ID,
+      useValue: 'pt'
+  },
+
+  /* if you don't provide the currency symbol in the pipe, 
+  this is going to be the default symbol (R$) ... */
+  {
+      provide:  DEFAULT_CURRENCY_CODE,
+      useValue: 'BRL'
+  },
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
