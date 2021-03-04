@@ -6,4 +6,5 @@ export class Estado {
     populacao: number;
     custoEstadoUS: number;
     cidade: Cidade;
+
 }

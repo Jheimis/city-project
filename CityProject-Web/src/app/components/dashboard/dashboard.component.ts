@@ -39,6 +39,7 @@ export class DashboardComponent implements OnInit {
   public cidade : Cidade;
   public estados: Estado[];
   public estado: Estado[];
+  selectedValue = 2;
   
   constructor(
     private fb: FormBuilder, 
@@ -53,6 +54,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.carregarEstado();
     this.setDolar();
+    this.carregarCidades()
+    this.imgEstado = "assets/img/SantaCatarina.png";
   }
   openDeleteModal(cidade) {
     this.deleteSelecionado = cidade;
@@ -66,6 +69,7 @@ export class DashboardComponent implements OnInit {
         (model : any) => {
           console.log(model);
           this.carregarEstado();
+          this.carregarCidades();
           this.deleteModalRef.hide();
         },
         (erro : any) => {console.log(erro);} 
@@ -83,6 +87,7 @@ export class DashboardComponent implements OnInit {
   }
 
   openCadastroModal(){
+    console.log(this.selectedValue)
     this.cadastroModalRef = this.modalService.show(this.cadastroModal);
   }
 
@@ -103,40 +108,43 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  public cidadeSelect(cidade: Cidade){
-    this.cidadeSelecionada = cidade;
-    this.cidadeForm.patchValue(cidade);
-  }
-
-  public cadastroCidade(){
-    this.imgEstado = "assets/img/SantaCatarina.png";
-    this.cidadeSelecionada = new Cidade();
-    this.cidadeForm.patchValue(this.cidadeSelecionada);
-  }
-
-  carregarCidades(event){}
-
-  public changeEstado(event : any ){
-
-    console.log(event);
-    this.capturaEvento = event;
-    if(event == 1){
-     this.imgEstado = "assets/img/RioGrandeDoSul.png";
-    }
-    if(event == 2 ){
-     this.imgEstado = "assets/img/SantaCatarina.png";
-    }
-    if(event == 3){
-     this.imgEstado = "assets/img/Parana.png";
-    }
-    this.cidadeService.getCidadeByEstadoId(event).subscribe(
+  carregarCidades(){
+    this.cidadeService.getCidadeByEstadoId(this.selectedValue).subscribe(
       (cidades: Cidade[]) => {
         this.cidades = cidades;
       },
       (erro: any) => {
         console.error(erro);
       }
+      
     );
+  }
+
+  public cidadeSelect(cidade: Cidade){
+    this.cidadeSelecionada = cidade;
+    this.cidadeForm.patchValue(cidade);
+    console.log(this.cidadeSelecionada);
+  }
+
+  public cadastroCidade(){
+    this.cidadeSelecionada = new Cidade();
+    this.cidadeForm.patchValue(this.cidadeSelecionada);
+  }
+
+  public changeEstado(event : any ){
+
+    console.log(event);
+    if(event == 1){
+     this.imgEstado = "assets/img/RioGrandeDoSul.png";
+    }
+    if(event == 2 || event == ''){
+     this.imgEstado = "assets/img/SantaCatarina.png";
+    }
+    if(event == 3){
+     this.imgEstado = "assets/img/Parana.png";
+    }
+
+    this.carregarCidades();
  
    }
 
