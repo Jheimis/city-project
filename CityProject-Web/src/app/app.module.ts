@@ -13,7 +13,8 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+//ordem
+import { DashboardComponent, NgbdSortableHeader } from './components/dashboard/dashboard.component';
 import { TituloComponent } from './components/titulo/titulo.component';
 import { EstadosComponent } from './components/estados/estados.component';
 import { CidadesComponent } from './components/cidades/cidades.component';
@@ -23,6 +24,9 @@ import { OnlyNumberDirective } from './directive/only-number.directive';
 import {LOCALE_ID, DEFAULT_CURRENCY_CODE} from '@angular/core';
 import localePt from '@angular/common/locales/pt';
 import {registerLocaleData} from '@angular/common';
+//pesquisa
+import { ListFilterPipe } from './components/dashboard/listFilterPipe';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 registerLocaleData(localePt, 'pt');
 
@@ -34,7 +38,9 @@ registerLocaleData(localePt, 'pt');
     TituloComponent,
     EstadosComponent,
     CidadesComponent,
+    NgbdSortableHeader,
     OnlyNumberDirective,
+    ListFilterPipe
   ],
   imports: [
     BrowserModule,
@@ -45,6 +51,7 @@ registerLocaleData(localePt, 'pt');
     HttpClientModule,
     TooltipModule.forRoot(),
     CommonModule,
+    NgbModule,
     BrowserAnimationsModule, 
     ToastrModule.forRoot({
       timeOut: 5000,
@@ -55,6 +62,7 @@ registerLocaleData(localePt, 'pt');
     ),
  
   ],
+  exports: [DashboardComponent],
   providers: [
   {
       provide: LOCALE_ID,
@@ -68,6 +76,7 @@ registerLocaleData(localePt, 'pt');
       useValue: 'BRL'
   },
     ],
+    
   bootstrap: [AppComponent]
 })
 export class AppModule { }

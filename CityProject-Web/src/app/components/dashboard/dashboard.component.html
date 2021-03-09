@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <div>
   <div>
     <app-titulo [titulo]= "'Estados'">
@@ -25,38 +26,69 @@
   <div class="row  mt-4">
     <div class='col-sm-12'>
       <app-titulo [titulo] = "titulo">
+        
+      </app-titulo>
+      <div class="form-group form-inline">
+
         <button class="btn btn-success" style="cursor: pointer;" (click)="openCadastroModal()">
           Cadastrar cidade
         </button>
         <button class="btn btn-success ml-2" style="cursor: pointer;" (click)="openCadastroArquivoModal()">
           Cadastrar por arquivo
         </button>
-      </app-titulo>
+        
+          <h5 id="filtro"> Filtrar:</h5> 
+          <input class="form-control ml-2" type="text" name="searchTerm" [(ngModel)]="searchTerm"
+              (input)="search($event.target.value)" />
       
-      <table class="table table-hover mt-2" *ngIf="cidades != null">
-        <thead class="table-primary">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Cidade</th>
-            <th scope="col">População</th>
-            <th scope="col">Custo</th>
-            <th scope="col">Opções</th>
-          </tr>
+      </div>
+
+    
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th scope="col" style="cursor: pointer;" sortable="id" (sort)="onSort($event)">#</th>
+          <th scope="col" style="cursor: pointer;" sortable="nome" (sort)="onSort($event)">Cidade</th>
+          <th scope="col" style="cursor: pointer;" sortable="populacao" (sort)="onSort($event)">População</th>
+          <th scope="col" style="cursor: pointer;" sortable="custoCidadeUS" (sort)="onSort($event)">Custo</th>
+          <th scope="col">Opções</th>
+        </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let cidade of cidades"  style="cursor: pointer;">
-            <th scope = "row">{{ cidade.id }}</th>
-            <td>{{ cidade.nome }}</td>
-            <td>{{ cidade.populacao | number }}</td>
-            <td >{{convertDolarCidade(cidade) | currency:'R$' }}</td>
-            <td>
-              <div class="btn-group">
-                <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)"><i class="fas fa-trash-alt"></i></button>
-                
-              </div>
-            </td>
-          </tr>
-        </tbody>
+
+        <ng-container *ngIf="searchVar === 0">
+          <tbody  >
+            <tr *ngFor="let cidade of cidades  ">
+              <th scope = "row">{{ cidade.id }}</th>
+              <td> <img [src]="imgEstado" class="mr-2" style="width: 20px"> {{ cidade.nome }}</td>
+              <td>{{ cidade.populacao | number }}</td>
+              <td >{{convertDolarCidade(cidade) | currency:'R$' }}</td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)"><i class="fas fa-trash-alt"></i></button>
+
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </ng-container>
+
+        <ng-container *ngIf="searchVar > 0">
+          <tbody  >
+            <tr *ngFor="let cidade of cidades | listFilter: searchTerm  ">
+              <th scope = "row">{{ cidade.id }}</th>
+              <td> <img [src]="imgEstado" class="mr-2" style="width: 20px"> {{ cidade.nome }}</td>
+              <td>{{ cidade.populacao | number }}</td>
+              <td >{{convertDolarCidade(cidade) | currency:'R$' }}</td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(cidade)"><i class="fas fa-trash-alt"></i></button>
+
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </ng-container>
+
       </table>
     </div>
   </div>
@@ -72,12 +104,13 @@
 <ng-template #cadastroModal>
   <div class="modal-header">
     <h4 class="modal-title pull-left">Cadastro de cidade</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="cancelarCadastro()">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cadastroModalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <form [formGroup]= "cidadeForm" (submit)="cidadeSubmit()">
+      
       <div class="form-group">
         <label for="formGroupExampleInput" class="form-label">Nome</label>
         <input type="text" formControlName="nome" class="form-control" >
@@ -87,11 +120,25 @@
         <label for="formGroupExampleInput" class="form-label">População</label>
         <input  OnlyNumber="true" formControlName="populacao" class="form-control" >
       </div>
+      <hr>
+      <button type="submit" class="btn btn-success" [disabled]="!cidadeForm.valid"  >Salvar</button>
+      <button type="button" class="btn btn-danger ml-2" (click)="cadastroModalRef.hide()" >Cancelar</button>
     </form>  
-    
+  </div>
+</ng-template>
+
+<ng-template #cadastroArquivoModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Cadastro por arquivo</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cadastroArquivoModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <input type='file' (change)="onFileChange($event)">
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-success" [disabled]="!cidadeForm.valid" >Salvar</button>
-    <button type="button" class="btn btn-danger" (click)="cancelarCadastro()" >Cancelar</button>
+    <button type="button" class="btn btn-success"  >Salvar</button>
+    <button type="button" class="btn btn-danger" (click)=" cadastroArquivoModalRef.hide()" >Cancelar</button>
   </div>
 </ng-template>
