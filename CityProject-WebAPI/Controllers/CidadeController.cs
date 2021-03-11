@@ -87,22 +87,30 @@ namespace CityProject_WebAPI.Controllers
                     }
                 }
                 var parametroCusto = await _repo.GetParametroCusto();
+                
+                if (parametroCusto == null)
+                {
+                    return BadRequest("Parametro custo não possui informações para os cálculos.");  
+                }
 
                  if(model.Populacao > parametroCusto.ValorCorte)
                  {
                     model.CustoCidadeUS = (parametroCusto.ValorCorte * parametroCusto.PorPessoa) 
-                                            + ((model.Populacao - parametroCusto.ValorCorte) 
-                                            - ((model.Populacao * parametroCusto.Desconto)/100));
+                                            + ((model.Populacao - parametroCusto.ValorCorte) * parametroCusto.PorPessoa
+                                            - (parametroCusto.PorPessoa * (model.Populacao * parametroCusto.Desconto)/100));
                  }
                 else  
                 {
                     model.CustoCidadeUS = (model.Populacao * parametroCusto.PorPessoa);
                 }
                 
-                // cidade.Estado.Populacao = cidade.Estado.Populacao + cidade.Populacao;
-                // cidade.Estado.CustoEstadoUS = cidade.Estado.CustoEstadoUS + cidade.CustoCidadeUS;
-            
+                var estado = await _repo.GetEstadosAsyncById(model.EstadoId, false);
+
+                estado.CustoEstadoUS += model.CustoCidadeUS;
+                estado.Populacao += model.Populacao;
+
                 _repo.Add(model);
+                _repo.Update(estado);
 
                 if(await _repo.SaveChangesAsync())
                 {
@@ -168,8 +176,8 @@ namespace CityProject_WebAPI.Controllers
         {
             try
             { 
-                var cidade = await _repo.GetCidadesAsyncById(cidadeId, true);
-                var estado = await _repo.GetEstadosAsyncById(cidade.EstadoId, true);
+                var cidade = await _repo.GetCidadesAsyncById(cidadeId, false);
+                var estado = await _repo.GetEstadosAsyncById(cidade.EstadoId, false);
                 if (cidade == null)
                     return NotFound("Cidade não encontrada");
 
@@ -177,6 +185,11 @@ namespace CityProject_WebAPI.Controllers
                 {
                     return BadRequest("Não é possivel remover essa cidade");
                 }
+
+                estado.CustoEstadoUS -= cidade.CustoCidadeUS;
+                estado.Populacao -= cidade.Populacao;
+
+                _repo.Update(estado);
                 _repo.Delete(cidade);
 
                 if(await _repo.SaveChangesAsync())

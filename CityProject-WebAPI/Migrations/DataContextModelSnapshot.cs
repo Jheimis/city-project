@@ -43,7 +43,7 @@ namespace CityProject_WebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CustoCidadeUS = 7427697.0039999997,
+                            CustoCidadeUS = 161126570.14379999,
                             EstadoId = 1,
                             Nome = "Porto Alegre",
                             Populacao = 1488252
@@ -51,7 +51,7 @@ namespace CityProject_WebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            CustoCidadeUS = 6568740.4019999998,
+                            CustoCidadeUS = 55088377.626900002,
                             EstadoId = 2,
                             Nome = "Florianópolis",
                             Populacao = 508826
@@ -59,7 +59,7 @@ namespace CityProject_WebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            CustoCidadeUS = 6627105.6289999997,
+                            CustoCidadeUS = 62293564.900049999,
                             EstadoId = 3,
                             Nome = "Londrina",
                             Populacao = 575377
@@ -89,21 +89,21 @@ namespace CityProject_WebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CustoEstadoUS = 7427697.0039999997,
+                            CustoEstadoUS = 161126570.14379999,
                             Nome = "Rio Grande do Sul",
                             Populacao = 1488252
                         },
                         new
                         {
                             Id = 2,
-                            CustoEstadoUS = 6568740.4019999998,
+                            CustoEstadoUS = 55088377.626900002,
                             Nome = "Santa Catarina",
                             Populacao = 508826
                         },
                         new
                         {
                             Id = 3,
-                            CustoEstadoUS = 6627105.6289999997,
+                            CustoEstadoUS = 62293564.900049999,
                             Nome = "Paraná",
                             Populacao = 575377
                         });

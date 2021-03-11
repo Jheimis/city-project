@@ -8,14 +8,14 @@
         <select [(ngModel)]="selectedValue" type="text" style="cursor: pointer;" 
             class="form-control col-sm-6" 
             (change)="changeEstado($event.target.value)">
-          <option *ngFor="let estado of estados" [value]="estado.id">{{ estado.nome }}</option>
+          <option *ngFor="let estado of estadoSelect" [value]="estado.id">{{ estado.nome }}</option>
         </select>
 
         <div *ngFor="let estado of estados" >
           <div *ngIf="estado.id == selectedValue">
             <h5 class="mt-4">Estado: {{ estado.nome }} </h5>
             <h5>População: {{ estado.populacao | number}} habitantes</h5>
-            <h5>Custo do Estado: R$ {{ estado.custoEstadoUS | currency }} </h5>
+            <h5>Custo do Estado: R$ {{convertDolarEstado(estado) | currency:'R$' }} </h5>
           </div>
         </div>
       </div>

@@ -8,7 +8,6 @@ import { CidadeService } from 'src/app/service/cidade/cidade.service';
 import { Dolar } from 'src/app/service/dolar';
 import { DolarService } from 'src/app/service/dolar.service';
 import { EstadoService } from 'src/app/service/estado/estado.service';
-import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 //orddem
 export type SortDirection = 'asc' | 'desc' | '';
@@ -71,6 +70,7 @@ export class DashboardComponent implements OnInit {
   public cidades: Cidade[];
   public cidade : Cidade;
   public estados: Estado[];
+  public estadoSelect: Estado[];
   public estado: Estado[];
   selectedValue: number  = 2;
   
@@ -91,6 +91,7 @@ export class DashboardComponent implements OnInit {
     
     ngOnInit(): void {
       this.carregarEstado();
+      this.carregarEstadoSelect();
       this.setDolar();
       this.carregarCidades()
       this.imgEstado = "assets/img/SantaCatarina.png";
@@ -122,8 +123,6 @@ export class DashboardComponent implements OnInit {
     
     //fim
     
-    
-    
     //pesquisa
     search(value: string): void {
       this.searchVar = value.length;
@@ -144,8 +143,8 @@ export class DashboardComponent implements OnInit {
         this.cidadeService.delete(this.deleteSelecionado.id).subscribe(
           (model : any) => {
             console.log(model);
-            this.carregarEstado();
             this.carregarCidades();
+            this.carregarEstado();
             this.deleteModalRef.hide();
           },
           (erro : any) => {console.log(erro);} 
@@ -156,6 +155,10 @@ export class DashboardComponent implements OnInit {
           this.deleteModalRef.hide();
         }
         
+      }
+
+      declineDelete(): void {
+        this.deleteModalRef.hide();
       }
       
       // excel
@@ -187,12 +190,7 @@ export class DashboardComponent implements OnInit {
       
       //fim excel
       
-      declineDelete(): void {
-        this.deleteModalRef.hide();
-      }
-      
       openCadastroModal(){
-        console.log("open Modal selectedValue = "+this.selectedValue);
         this.cadastroModalRef = this.modalService.show(this.cadastroModal);
         this.criarForm();
       }
@@ -202,10 +200,20 @@ export class DashboardComponent implements OnInit {
       }
       
       carregarEstado(){
-        
         this.estadosService.getAll().subscribe(
           (estados: Estado[]) => {
             this.estados = estados;
+          },
+          (erro: any) => {
+            console.error(erro);
+          }
+          
+          );
+      }
+      carregarEstadoSelect(){
+        this.estadosService.getAll().subscribe(
+          (estados: Estado[]) => {
+            this.estadoSelect = estados;
           },
           (erro: any) => {
             console.error(erro);
@@ -240,10 +248,12 @@ export class DashboardComponent implements OnInit {
           public changeEstado(event : any ){
             
             console.log(event);
+            console.log(this.selectedValue);
+            this.selectedValue = event;
             if(event == 1){
               this.imgEstado = "assets/img/RioGrandeDoSul.png";
             }
-            if(event == 2 || event == ''){
+            if(event == 2){
               this.imgEstado = "assets/img/SantaCatarina.png";
             }
             if(event == 3){
@@ -263,6 +273,16 @@ export class DashboardComponent implements OnInit {
             }
             return 0
           }
+  
+          convertDolarEstado(estado: Estado) {
+
+            if (estado.custoEstadoUS && this.dolarHoje?.USD) {
+             
+              return estado.custoEstadoUS * (this.dolarHoje.USD.ask || 1);
+            }
+            return (0);
+          }
+        
           
           private setDolar() {
             this.dolarService.getDolar()
@@ -281,11 +301,12 @@ export class DashboardComponent implements OnInit {
             });
           }
           
-          public salvarCidade (cidade: Cidade){
+        public salvarCidade(cidade: Cidade) {
             this.cidadeService.post(this.cidade).subscribe(
               (retorno: Cidade) => {
                 console.log(retorno);
                 this.carregarCidades();
+                this.carregarEstado();
                 this.cadastroModalRef.hide();
                 return this.toastr.success('Cidade cadastrada com sucesso', 'Sucesso');
               },
@@ -293,6 +314,8 @@ export class DashboardComponent implements OnInit {
                 console.log(erro);
               }
               );
+              
+              
             }
             
             public cidadeSubmit(){

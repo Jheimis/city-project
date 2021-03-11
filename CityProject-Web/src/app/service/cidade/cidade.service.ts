@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Cidade } from 'src/app/models/Cidade';
+import { Estado } from 'src/app/models/Estado';
 
 @Injectable({
   providedIn: 'root'

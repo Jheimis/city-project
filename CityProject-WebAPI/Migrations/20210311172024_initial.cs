@@ -58,32 +58,32 @@ namespace CityProject_WebAPI.Migrations
             migrationBuilder.InsertData(
                 table: "Estados",
                 columns: new[] { "Id", "CustoEstadoUS", "Nome", "Populacao" },
-                values: new object[] { 1, 7427697.0039999997, "Rio Grande do Sul", 1488252 });
+                values: new object[] { 1, 161126570.14379999, "Rio Grande do Sul", 1488252 });
 
             migrationBuilder.InsertData(
                 table: "Estados",
                 columns: new[] { "Id", "CustoEstadoUS", "Nome", "Populacao" },
-                values: new object[] { 2, 6568740.4019999998, "Santa Catarina", 508826 });
+                values: new object[] { 2, 55088377.626900002, "Santa Catarina", 508826 });
 
             migrationBuilder.InsertData(
                 table: "Estados",
                 columns: new[] { "Id", "CustoEstadoUS", "Nome", "Populacao" },
-                values: new object[] { 3, 6627105.6289999997, "Paraná", 575377 });
+                values: new object[] { 3, 62293564.900049999, "Paraná", 575377 });
 
             migrationBuilder.InsertData(
                 table: "Cidades",
                 columns: new[] { "Id", "CustoCidadeUS", "EstadoId", "Nome", "Populacao" },
-                values: new object[] { 1, 7427697.0039999997, 1, "Porto Alegre", 1488252 });
+                values: new object[] { 1, 161126570.14379999, 1, "Porto Alegre", 1488252 });
 
             migrationBuilder.InsertData(
                 table: "Cidades",
                 columns: new[] { "Id", "CustoCidadeUS", "EstadoId", "Nome", "Populacao" },
-                values: new object[] { 2, 6568740.4019999998, 2, "Florianópolis", 508826 });
+                values: new object[] { 2, 55088377.626900002, 2, "Florianópolis", 508826 });
 
             migrationBuilder.InsertData(
                 table: "Cidades",
                 columns: new[] { "Id", "CustoCidadeUS", "EstadoId", "Nome", "Populacao" },
-                values: new object[] { 3, 6627105.6289999997, 3, "Londrina", 575377 });
+                values: new object[] { 3, 62293564.900049999, 3, "Londrina", 575377 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cidades_EstadoId",

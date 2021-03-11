@@ -139,15 +139,7 @@ namespace CityProject_WebAPI.Data
             return await query.FirstOrDefaultAsync();
         }
 
-        public void UpdateEstado(Estado estado)
-        {
-            // System.Console.WriteLine("estado.Populacao"+ estado.Populacao);
-            // estado.Populacao = estado.Cidades.Sum(x => x.Populacao);
-            // System.Console.WriteLine("estado.Populacao"+ estado.Populacao);
-
-            //  _context.Update(estado);
-
-        }
+       
 
         public async Task<Cidade> GetCidadeAsyncByNome(string cidadeNome)
         {
@@ -187,5 +179,6 @@ namespace CityProject_WebAPI.Data
 
             return await query.FirstOrDefaultAsync();
         }
+           
     }
 }
