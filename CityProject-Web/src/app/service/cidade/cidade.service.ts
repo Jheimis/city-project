@@ -30,15 +30,12 @@ export class CidadeService {
     return this.http.post(`${this.baseUrl}`, cidade);
   }
 
-  postArquivo(cidade: Cidade){
-    return this.http.post(`${this.baseUrl}`, cidade);
+  saveCidadeFromFile(data: FormData) {
+    return this.http
+      .post(`${this.baseUrl}/enviarexcelfile`, data)
+      .toPromise();
   }
-  //Excel
-   postExcel( jsonData: string){
-    console.log("Entrou Service " + jsonData);
-    return this.http.post(`${this.baseUrl}/enviarexcel`, jsonData);
-
-  }
+  
   put(cidade: Cidade){
     return this.http.put(`${this.baseUrl}/${cidade.id}`, cidade);
   }

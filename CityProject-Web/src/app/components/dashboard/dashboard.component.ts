@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, Directive, EventEmitter, Input, Output, QueryList, ViewChildren  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { Cidade } from 'src/app/models/Cidade';
@@ -8,7 +9,7 @@ import { CidadeService } from 'src/app/service/cidade/cidade.service';
 import { Dolar } from 'src/app/service/dolar';
 import { DolarService } from 'src/app/service/dolar.service';
 import { EstadoService } from 'src/app/service/estado/estado.service';
-import * as XLSX from 'xlsx';
+
 //orddem
 export type SortDirection = 'asc' | 'desc' | '';
 const rotate: {[key: string]: SortDirection} = { 'asc': 'desc', 'desc': '', '': 'asc' };
@@ -59,10 +60,8 @@ export class DashboardComponent implements OnInit {
   public cidadeSelecionada : Cidade;
   public deleteSelecionado : Cidade;
   public cidadeForm: FormGroup;
-  public modo: string;
   public imgEstado: string;
-  public estadoSelecionado: Estado;
-  public capturaEvento: number;
+  formData = new FormData();
   
   public dolarHoje = new Dolar;
   public cidadeDolar: FormGroup;
@@ -86,270 +85,227 @@ export class DashboardComponent implements OnInit {
     private cidadeService: CidadeService, 
     private estadosService: EstadoService, 
     private dolarService: DolarService,
-    private toastr: ToastrService 
-    ) { this.criarForm(); }
+    private toastr: ToastrService,
+    private router: Router, 
+  )
+  { this.criarForm(); }
     
-    ngOnInit(): void {
-      this.carregarEstado();
-      this.carregarEstadoSelect();
-      this.setDolar();
-      this.carregarCidades()
-      this.imgEstado = "assets/img/SantaCatarina.png";
-    }
+  ngOnInit(): void {
+    this.carregarEstado();
+    this.carregarEstadoSelect();
+    this.setDolar();
+    this.carregarCidades()
+    this.imgEstado = "assets/img/SantaCatarina.png";
+  }
     
-    //ordem
-    
-    onSort({column, direction}: SortEvent) {
+  //ordem
+  onSort({column, direction}: SortEvent) {
       
-      // resetting other headers
-      this.headers.forEach(header => {
-        if (header.sortable !== column) {
-          header.direction = '';
-        }
-      });
+    // resetting other headers
+    this.headers.forEach(header => {
+      if (header.sortable !== column) {
+        header.direction = '';
+      }
+    });
       
-      // sorting countries
-      if (direction === '' || column === '') {
-        return this.cidades
-        console.log(column);
-        console.log(direction);
-      } else {
+    // sorting countries
+    if (direction === '' || column === '') {
+      return this.cidades
+
+    } else {
         this.cidades.sort((a, b) => {
           const res = compare(a[column], b[column]);
           return direction === 'asc' ? res : -res;
         });
-      }
     }
+  }
+
+  search(value: string): void {
+    this.searchVar = value.length;
+    this.cidades.filter((val) => val.nome.toLowerCase().includes(value));  
+  }
     
-    //fim
+  openDeleteModal(cidade) {
+    this.deleteSelecionado = cidade;
+    this.deleteModalRef = this.modalService.show(this.deleteModal, {class: 'modal-sm'});
+  }
     
-    //pesquisa
-    search(value: string): void {
-      this.searchVar = value.length;
-      this.cidades.filter((val) => val.nome.toLowerCase().includes(value));
-      
-    }
-    
-    //fim pesquisa
-    
-    openDeleteModal(cidade) {
-      this.deleteSelecionado = cidade;
-      this.deleteModalRef = this.modalService.show(this.deleteModal, {class: 'modal-sm'});
-    }
-    
-    confirmDelete(): void {
-      if(this.deleteSelecionado.estadoId != 1){
-        this.toastr.success('Cidade deletada com Sucesso', 'Deletada');
-        this.cidadeService.delete(this.deleteSelecionado.id).subscribe(
-          (model : any) => {
-            console.log(model);
-            this.carregarCidades();
-            this.carregarEstado();
-            this.deleteModalRef.hide();
-          },
-          (erro : any) => {console.log(erro);} 
-          );
-        }
-        else{
-          this.toastr.error('Cidades que pertencem ao estado do Rio Grande do Sul não podem ser deletadas', 'Erro');
+  confirmDelete(): void {
+    if(this.deleteSelecionado.estadoId != 1){
+      this.toastr.success('Cidade deletada com Sucesso', 'Deletada');
+      this.cidadeService.delete(this.deleteSelecionado.id).subscribe(
+        (model : any) => {
+          console.log(model);
+          this.carregarCidades();
+          this.carregarEstado();
           this.deleteModalRef.hide();
-        }
+        },
+        (erro : any) => {console.log(erro);} 
+      );
+    }
+    else{
+      this.toastr.error('Cidades que pertencem ao estado do Rio Grande do Sul não podem ser deletadas', 'Erro');
+      this.deleteModalRef.hide();
+    }
         
-      }
-
-      declineDelete(): void {
-        this.deleteModalRef.hide();
-      }
+  }
       
-      // excel
-      onFileChange(ev) {
-        let workBook = null;
-        let jsonData = null;
-        const reader = new FileReader();
-        const file = ev.target.files[0];
-        reader.onload = (event) => {
-          const data = reader.result;
-          workBook = XLSX.read(data, { type: 'binary' });
-          jsonData = workBook.SheetNames.reduce((initial, name) => {
-            const sheet = workBook.Sheets[name];
-            initial[name] = XLSX.utils.sheet_to_json(sheet);
-            return initial;
-          }, {});
-          const dataString = JSON.stringify(jsonData);
-          //saida
-          this.salvarExcel(dataString);
-        }
-        reader.readAsBinaryString(file);
-      }
-      public salvarExcel (jsonData: string){
-        console.log(jsonData);
-        this.cidadeService.postExcel(jsonData);
-        this.carregarCidades();
-        console.log("Fim Salve Excel Componente");
-      }
+  declineDelete(): void {
+    this.deleteModalRef.hide();
+  }
       
-      //fim excel
+  openCadastroModal(){
+    this.cadastroModalRef = this.modalService.show(this.cadastroModal);
+    this.criarForm();
+  }
       
-      openCadastroModal(){
-        this.cadastroModalRef = this.modalService.show(this.cadastroModal);
-        this.criarForm();
-      }
+  openCadastroArquivoModal(){
+    this.cadastroArquivoModalRef = this.modalService.show(this.cadastroArquivoModal);
+  }
       
-      openCadastroArquivoModal(){
-        this.cadastroArquivoModalRef = this.modalService.show(this.cadastroArquivoModal);
+  carregarEstado(){
+    this.estadosService.getAll().subscribe(
+      (estados: Estado[]) => {
+        this.estados = estados;
+      },
+      (erro: any) => {
+        console.error(erro);
       }
-      
-      carregarEstado(){
-        this.estadosService.getAll().subscribe(
-          (estados: Estado[]) => {
-            this.estados = estados;
-          },
-          (erro: any) => {
-            console.error(erro);
-          }
-          
-          );
-      }
-      carregarEstadoSelect(){
-        this.estadosService.getAll().subscribe(
-          (estados: Estado[]) => {
-            this.estadoSelect = estados;
-          },
-          (erro: any) => {
-            console.error(erro);
-          }
-          
-          );
-        }
-        
-        carregarCidades(){
-          this.cidadeService.getCidadeByEstadoId(this.selectedValue).subscribe(
-            (cidades: Cidade[]) => {
-              this.cidades = cidades;
-            },
-            (erro: any) => {
-              console.error(erro);
-            }
-            
-            );
-        }
-          
-          public cidadeSelect(cidade: Cidade){
-            this.cidadeSelecionada = cidade;
-            this.cidadeForm.patchValue(cidade);
-            console.log(this.cidadeSelecionada);
-          }
-          
-          public cadastroCidade(){
-            this.cidadeSelecionada = new Cidade();
-            this.cidadeForm.patchValue(this.cidadeSelecionada);
-          }
-          
-          public changeEstado(event : any ){
-            
-            console.log(event);
-            console.log(this.selectedValue);
-            this.selectedValue = event;
-            if(event == 1){
-              this.imgEstado = "assets/img/RioGrandeDoSul.png";
-            }
-            if(event == 2){
-              this.imgEstado = "assets/img/SantaCatarina.png";
-            }
-            if(event == 3){
-              this.imgEstado = "assets/img/Parana.png";
-            }
-            
-            this.carregarCidades();
-            
-          }
-          
-          convertDolarCidade(cidade: Cidade) {
-            
-            if (cidade.custoCidadeUS && this.dolarHoje?.USD) {
-              
-              return cidade.custoCidadeUS * (this.dolarHoje.USD.ask || 1);
-              
-            }
-            return 0
-          }
+    );
+  }
   
-          convertDolarEstado(estado: Estado) {
+  carregarEstadoSelect(){
+    this.estadosService.getAll().subscribe(
+      (estados: Estado[]) => {
+        this.estadoSelect = estados;
+      },
+      (erro: any) => {
+        console.error(erro);
+      } 
+    );
+  }
+          
+  carregarCidades(){
+    this.cidadeService.getCidadeByEstadoId(this.selectedValue).subscribe(
+      (cidades: Cidade[]) => {
+        this.cidades = cidades;
+      },
+      (erro: any) => {
+        console.error(erro);
+      }
+    );
+  }
+  
+  // excel
+  selectFiles(input: HTMLInputElement) {
+    const files = input.files;
+    if (files) this.formData.append('file', files[0], files[0].name);
+  }
+            
+  saveCidadeFile() {
 
-            if (estado.custoEstadoUS && this.dolarHoje?.USD) {
-             
-              return estado.custoEstadoUS * (this.dolarHoje.USD.ask || 1);
-            }
-            return (0);
-          }
-        
-          
-          private setDolar() {
-            this.dolarService.getDolar()
-            .then(res => {
-              this.dolarHoje = res as Dolar
-              
-            })
-            .catch(err => console.log(err))
-          }
-          
-          public criarForm(){
-            this.cidadeForm = this.fb.group({
-              nome: ['', Validators.required],
-              populacao: ['', Validators.required],
-              estadoId: [this.selectedValue || '']
-            });
-          }
-          
-        public salvarCidade(cidade: Cidade) {
-            this.cidadeService.post(this.cidade).subscribe(
-              (retorno: Cidade) => {
-                console.log(retorno);
-                this.carregarCidades();
-                this.carregarEstado();
-                this.cadastroModalRef.hide();
-                return this.toastr.success('Cidade cadastrada com sucesso', 'Sucesso');
-              },
-              (erro : any) => {
-                console.log(erro);
-              }
-              );
-              
-              
-            }
+    this.cidadeService
+      .saveCidadeFromFile(this.formData)
+      .then((response) => {
+        console.log('cidades salva com sucesso'+response);
+      })
+      .then(() => {
+        this.router.navigate([`/`]);
+      })
+      .catch((err) => {
+        console.log('error: ' + err);
+      });
+  }
             
-            public cidadeSubmit(){
-              this.cidade = this.cidadeForm.value;
-              if(this.cidade.populacao <= 0){
-                this.toastr.error('Número de população deve ser maior que 0', 'Erro');
-              }
-              else{
-                var validado: boolean = true;
-                this.cidadeService.getCidadeByEstadoId(this.selectedValue).subscribe(
-                  (cidades: Cidade[]) => {
-                    for(let item of cidades){
-                      if(item.nome.toUpperCase() == this.cidade.nome.toUpperCase() ){
-                        validado= false;
-                        break;
-                      }
-                    }
-                    if (validado) {
-                      this.salvarCidade(this.cidadeForm.value); 
-                    }
-                    else {
-                      this.toastr.error('Essa cidade já existe nesse estado', 'Erro');
-                    }
-                  }
-                  );
-                }
-              }
+  public changeEstado(event : any ){
               
-            public cancelarCadastroArquivo(){
-                this.cadastroArquivoModalRef.hide();
-              }
-              public cancelarCadastro(){
-                this.cadastroModalRef.hide();
-              }
+    console.log(event);
+    console.log(this.selectedValue);
+    this.selectedValue = event;
+    if(event == 1){
+      this.imgEstado = "assets/img/RioGrandeDoSul.png";
+    }
+    if(event == 2){
+      this.imgEstado = "assets/img/SantaCatarina.png";
+    }
+    if(event == 3){
+      this.imgEstado = "assets/img/Parana.png";
+    }
               
-            }
+    this.carregarCidades();
+              
+  }
             
+  convertDolarCidade(cidade: Cidade) {        
+    if (cidade.custoCidadeUS && this.dolarHoje?.USD) {         
+      return cidade.custoCidadeUS * (this.dolarHoje.USD.ask || 1);        
+    }
+    return 0
+  }
+            
+  convertDolarEstado(estado: Estado) {        
+    if (estado.custoEstadoUS && this.dolarHoje?.USD) {
+      return estado.custoEstadoUS * (this.dolarHoje.USD.ask || 1);
+    }
+    return (0);
+  }
+            
+  private setDolar() {
+    this.dolarService.getDolar()
+      .then(res => {
+        this.dolarHoje = res as Dolar
+                
+      })
+      .catch(err => console.log(err))
+  }
+            
+  public criarForm(){
+    this.cidadeForm = this.fb.group({
+    nome: ['', Validators.required],
+    populacao: ['', Validators.required],
+    estadoId: [this.selectedValue || '']
+    });
+  }
+            
+  public salvarCidade(cidade: Cidade) {
+    this.cidadeService.post(this.cidade).subscribe(
+      (retorno: Cidade) => {
+        console.log(retorno);
+        this.carregarCidades();
+        this.carregarEstado();
+        this.cadastroModalRef.hide();
+        return this.toastr.success('Cidade cadastrada com sucesso', 'Sucesso');
+      },
+      (erro : any) => {
+        console.log(erro);
+      }
+    );   
+  }
+              
+  public cidadeSubmit(){
+    this.cidade = this.cidadeForm.value;
+    if(this.cidade.populacao <= 0){
+      this.toastr.error('Número de população deve ser maior que 0', 'Erro');
+    }
+    else{
+      var validado: boolean = true;
+      this.cidadeService.getCidadeByEstadoId(this.selectedValue).subscribe(
+        (cidades: Cidade[]) => {
+          for(let item of cidades){
+            if(item.nome.toUpperCase() == this.cidade.nome.toUpperCase() ){
+              validado= false;
+              break;
+            }
+          }
+          if (validado) {
+            this.salvarCidade(this.cidadeForm.value); 
+          }
+          else {
+            this.toastr.error('Essa cidade já existe nesse estado', 'Erro');
+          }
+        }
+      );
+    }
+  }              
+}
+              

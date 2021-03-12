@@ -36,14 +36,12 @@
         <button class="btn btn-success ml-2" style="cursor: pointer;" (click)="openCadastroArquivoModal()">
           Cadastrar por arquivo
         </button>
-        
           <h5 id="filtro"> Filtrar:</h5> 
           <input class="form-control ml-2" type="text" name="searchTerm" [(ngModel)]="searchTerm"
               (input)="search($event.target.value)" />
       
       </div>
 
-    
       <table class="table table-hover">
         <thead>
         <tr>
@@ -135,10 +133,9 @@
     </button>
   </div>
   <div class="modal-body">
-    <input type='file' (change)="onFileChange($event)">
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-success"  >Salvar</button>
-    <button type="button" class="btn btn-danger" (click)=" cadastroArquivoModalRef.hide()" >Cancelar</button>
+    <input #upload name="upload" type="file" multiple class="item__field" (change)="selectFiles(upload)">
+    <hr>
+    <button class="btn btn-success"><a (click)="saveCidadeFile()">Salvar</a></button>
+    <button type="button" class="btn btn-danger ml-2" (click)=" cadastroArquivoModalRef.hide()" >Cancelar</button>
   </div>
 </ng-template>

@@ -55,7 +55,12 @@ namespace CityProject_WebAPI
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization(); // Add it here
+            // app.UseEndpoints(endpoints =>
+            // {       
+            //     endpoints.MapControllers();
+            // });
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 

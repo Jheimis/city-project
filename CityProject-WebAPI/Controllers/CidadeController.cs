@@ -1,15 +1,14 @@
 using System;
-using System.Data;
-using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 using CityProject_WebAPI.Data;
 using CityProject_WebAPI.Models;
-using ExcelDataReader;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
-using OfficeOpenXml;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Data;
+using Microsoft.AspNetCore.Hosting;
+using ClosedXML.Excel;
 
 namespace CityProject_WebAPI.Controllers
 {
@@ -124,6 +123,52 @@ namespace CityProject_WebAPI.Controllers
             return BadRequest();
         }
 
+        [HttpPost]
+        [Route("enviarexcelfile")]
+        public async Task<IActionResult> ExcelFile(IFormFile file)
+        {
+            using (XLWorkbook workBook = new XLWorkbook(file.OpenReadStream()))
+            {
+                IXLWorksheet workSheet = workBook.Worksheet(1);
+
+                DataTable dt = new DataTable();
+
+                bool firstRow = true;
+                foreach (IXLRow row in workSheet.Rows())
+                {
+                    
+                    if (firstRow)
+                    {
+                        foreach (IXLCell cell in row.Cells())
+                        {
+                            dt.Columns.Add(cell.Value.ToString());
+                        }
+                        firstRow = false;
+                    }
+                    else
+                    {
+                        
+                        dt.Rows.Add();
+                        int i = 0;
+
+                        foreach (IXLCell cell in row.Cells(row.FirstCellUsed().Address.ColumnNumber, row.LastCellUsed().Address.ColumnNumber))
+                        {
+                            dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
+                            i++;
+                        }
+                    }  
+                }
+                string excelString = JsonConvert.SerializeObject(dt);
+                 var results = JsonConvert.DeserializeObject<List<Cidade>>(excelString);
+                foreach (var item in results)
+                {
+                    await post(item);
+                    
+                }
+            }
+            return Ok();
+        }
+
         [HttpPut ("{cidadeId}")]
         public async Task<IActionResult> put(int cidadeId, Cidade model)
         {
@@ -140,20 +185,6 @@ namespace CityProject_WebAPI.Controllers
                 {
                     model.CustoCidadeUS = (model.Populacao * parametroCusto.PorPessoa);
                 }
-
-                // if (estado.Populacao < model.Populacao)
-                // {
-                //     estado.Populacao += (model.Populacao - estado.Populacao);
-                //     estado.CustoEstadoUS += (model.CustoCidadeUS - estado.CustoEstadoUS);
-                // }
-                // else
-                // {
-
-                //     estado.Populacao -= (estado.Populacao - model.Populacao);
-                //     estado.CustoEstadoUS -= (estado.CustoEstadoUS - model.CustoCidadeUS);
-                // }
-
-                // model.Estado = estado;
 
                 _repo.Update(model);
                 
